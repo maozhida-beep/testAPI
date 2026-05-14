@@ -17,11 +17,31 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant"},
 ]
 
-print("=== 终端对话模式 (Ctrl+C 退出) ===\n")
+def read_multiline():
+    """Read multi-line input until two consecutive blank lines (Enter twice)."""
+    lines = []
+    blank_count = 0
+    print("You: ", end="", flush=True)
+    while True:
+        line = input()
+        lines.append(line)
+        if line.strip() == "":
+            blank_count += 1
+            if blank_count >= 2:
+                # remove the two trailing blank sentinel lines
+                while lines and lines[-1].strip() == "":
+                    lines.pop()
+                return "\n".join(lines)
+        else:
+            blank_count = 0
+
+
+print("=== 终端对话模式 (Ctrl+C 退出) ===")
+print("=== 多行输入: 连续按两次回车发送 | Ctrl+C 退出 ===\n")
 
 try:
     while True:
-        user_input = input("You: ")
+        user_input = read_multiline()
         if not user_input.strip():
             continue
 
