@@ -32,7 +32,7 @@ def read_multiline():
         line = input()
         lines.append(line)
 
-        if len(lines) == 1 and clean_cmd(line) in ("/lines", "/clear"):
+        if len(lines) == 1 and clean_cmd(line) in ("/lines", "/single", "/clear"):
             return clean_cmd(line)
 
         if line.strip() == "":
@@ -57,7 +57,7 @@ def send_message(stream):
     return full_response
 
 
-print("=== 终端对话 | /lines 切换多行 | /clear 清空历史 | Ctrl+C 退出 ===\n")
+print("=== 终端对话 | /lines 多行 | /single 单行 | /clear 清空 | Ctrl+C 退出 ===\n")
 
 multiline = False
 
@@ -72,9 +72,13 @@ try:
             continue
 
         if clean_cmd(user_input) == "/lines":
-            multiline = not multiline
-            state = "开启" if multiline else "关闭"
-            print(f"[多行输入已{state}]\n")
+            multiline = True
+            print("[多行输入已开启]\n")
+            continue
+
+        if clean_cmd(user_input) == "/single":
+            multiline = False
+            print("[单行输入模式]\n")
             continue
 
         if clean_cmd(user_input) == "/clear":
