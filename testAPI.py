@@ -18,13 +18,18 @@ messages = [
 ]
 
 def read_multiline():
-    """Read multi-line input until two consecutive blank lines (Enter twice)."""
+    """Read multi-line input. /lines or /clear on their own line exits immediately."""
     lines = []
     blank_count = 0
     print("... ", end="", flush=True)
     while True:
         line = input()
         lines.append(line)
+
+        # single-line /lines or /clear toggles back immediately
+        if len(lines) == 1 and line.strip() in ("/lines", "/clear"):
+            return line.strip()
+
         if line.strip() == "":
             blank_count += 1
             if blank_count >= 2:
@@ -47,7 +52,7 @@ def send_message(stream):
     return full_response
 
 
-print("=== 终端对话模式 | /lines 切换多行 | /clear 清空历史 | Ctrl+C 退出 ===\n")
+print("=== 终端对话 | /lines 切换多行 | /clear 清空历史 | Ctrl+C 退出 ===\n")
 
 multiline = False
 
@@ -55,20 +60,19 @@ try:
     while True:
         if multiline:
             print("[多行模式] ", end="")
-            user_input = read_multiline()
-        else:
-            user_input = input("You: ")
+        user_input = read_multiline() if multiline else input("You: ")
 
-        if not user_input.strip():
+        stripped = user_input.strip()
+        if not stripped:
             continue
 
-        if user_input.strip() == "/lines":
+        if stripped == "/lines":
             multiline = not multiline
             state = "开启" if multiline else "关闭"
             print(f"[多行输入已{state}]\n")
             continue
 
-        if user_input.strip() == "/clear":
+        if stripped == "/clear":
             messages = [
                 {"role": "system", "content": "You are a helpful assistant"},
             ]
