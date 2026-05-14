@@ -21,14 +21,13 @@ def read_multiline():
     """Read multi-line input until two consecutive blank lines (Enter twice)."""
     lines = []
     blank_count = 0
-    print("You: ", end="", flush=True)
+    print("... ", end="", flush=True)
     while True:
         line = input()
         lines.append(line)
         if line.strip() == "":
             blank_count += 1
             if blank_count >= 2:
-                # remove the two trailing blank sentinel lines
                 while lines and lines[-1].strip() == "":
                     lines.pop()
                 return "\n".join(lines)
@@ -36,13 +35,44 @@ def read_multiline():
             blank_count = 0
 
 
-print("=== 终端对话模式 (Ctrl+C 退出) ===")
-print("=== 多行输入: 连续按两次回车发送 | Ctrl+C 退出 ===\n")
+def send_message(stream):
+    print("AI: ", end="", flush=True)
+    full_response = ""
+    for chunk in stream:
+        if chunk.choices[0].delta.content:
+            content = chunk.choices[0].delta.content
+            print(content, end="", flush=True)
+            full_response += content
+    print("\n")
+    return full_response
+
+
+print("=== 终端对话模式 | /lines 切换多行 | /clear 清空历史 | Ctrl+C 退出 ===\n")
+
+multiline = False
 
 try:
     while True:
-        user_input = read_multiline()
+        if multiline:
+            print("[多行模式] ", end="")
+            user_input = read_multiline()
+        else:
+            user_input = input("You: ")
+
         if not user_input.strip():
+            continue
+
+        if user_input.strip() == "/lines":
+            multiline = not multiline
+            state = "开启" if multiline else "关闭"
+            print(f"[多行输入已{state}]\n")
+            continue
+
+        if user_input.strip() == "/clear":
+            messages = [
+                {"role": "system", "content": "You are a helpful assistant"},
+            ]
+            print("[对话历史已清空]\n")
             continue
 
         messages.append({"role": "user", "content": user_input})
@@ -55,15 +85,7 @@ try:
             stream=True,
         )
 
-        print("AI: ", end="", flush=True)
-        full_response = ""
-        for chunk in stream:
-            if chunk.choices[0].delta.content:
-                content = chunk.choices[0].delta.content
-                print(content, end="", flush=True)
-                full_response += content
-        print("\n")
-
+        full_response = send_message(stream)
         messages.append({"role": "assistant", "content": full_response})
 
 except KeyboardInterrupt:
