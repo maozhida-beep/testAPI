@@ -40,13 +40,22 @@ python testAPI.py
 
 **4. Chat**
 
-Type your message and press Enter. The model streams its reply token by token. Press `Ctrl+C` to exit.
+Type your message and press Enter twice in a row to send. The model streams its reply token by token. Multi-line input works for pasting code or long text. Press `Ctrl+C` to exit.
 
 ```
-=== Terminal Chat Mode (Ctrl+C to quit) ===
+=== Multi-line: Enter twice to send | Ctrl+C to quit ===
 
 You: Hello
+  (press Enter here)
+
 AI: Hello! How can I help you today?
+
+You: Explain this code:
+def fib(n):
+    return n if n <= 1 else fib(n-1) + fib(n-2)
+  (press Enter twice to send)
+
+AI: This is a recursive Fibonacci implementation...
 ```
 
 ### Configuration
@@ -101,13 +110,22 @@ python testAPI.py
 
 **4. 使用**
 
-在终端中输入问题，按回车发送。模型会以流式逐字输出回复。按 `Ctrl+C` 退出。
+输入内容后连按两次回车发送。模型以流式逐字输出回复。支持多行输入，可粘贴代码块或长文本。按 `Ctrl+C` 退出。
 
 ```
-=== 终端对话模式 (Ctrl+C 退出) ===
+=== 多行输入: 连续按两次回车发送 | Ctrl+C 退出 ===
 
 You: 你好
+  （按一次回车）
+
 AI: 你好！有什么可以帮你的？
+
+You: 解释一下这段代码:
+def fib(n):
+    return n if n <= 1 else fib(n-1) + fib(n-2)
+  （连按两次回车发送）
+
+AI: 这是一个递归实现的斐波那契数列函数...
 ```
 
 ### 配置
