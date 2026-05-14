@@ -51,11 +51,12 @@ AI: Hello! How can I help you today?
 
 | Command   | Description                      |
 |-----------|----------------------------------|
-| `/lines`  | Toggle multi-line input mode     |
+| `/lines`  | Enter multi-line input mode      |
+| `/single` | Return to single-line mode       |
 | `/clear`  | Clear conversation history       |
 | `Ctrl+C`  | Exit                             |
 
-Use `/lines` to enter multi-line mode for pasting code or long text. In multi-line mode, press Enter twice in a row to send. Use `/lines` again to return to single-line mode.
+Use `/lines` to enter multi-line mode for pasting code or long text. In multi-line mode, press Enter twice in a row to send. Use `/single` to return to single-line mode.
 
 ```
 You: /lines
@@ -66,8 +67,11 @@ You: /lines
 ...     return n if n <= 1 else fib(n-1) + fib(n-2)
 ... 
 ... 
+You: /single
+[Single-line mode]
 
-AI: This is a recursive Fibonacci implementation...
+You: Thanks!
+AI: You're welcome!
 ```
 
 ### Configuration
@@ -133,11 +137,12 @@ AI: 你好！有什么可以帮你的？
 
 | 命令 | 说明 |
 |------|------|
-| `/lines` | 切换多行输入模式 |
+| `/lines` | 进入多行输入模式 |
+| `/single` | 回到单行输入模式 |
 | `/clear` | 清空对话历史 |
 | `Ctrl+C` | 退出程序 |
 
-使用 `/lines` 进入多行模式，可粘贴代码块或长文本。多行模式下连按两次回车发送，再次输入 `/lines` 切回单行模式。
+使用 `/lines` 进入多行模式，可粘贴代码块或长文本。多行模式下连按两次回车发送，使用 `/single` 切回单行模式。
 
 ```
 You: /lines
@@ -148,8 +153,11 @@ You: /lines
 ...     return n if n <= 1 else fib(n-1) + fib(n-2)
 ... 
 ... 
+You: /single
+[单行输入模式]
 
-AI: 这是一个递归实现的斐波那契数列函数...
+You: 谢谢！
+AI: 不客气！
 ```
 
 ### 配置
