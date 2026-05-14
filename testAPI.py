@@ -17,6 +17,12 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant"},
 ]
 
+
+def clean_cmd(text):
+    """Strip whitespace and encoding noise for command matching."""
+    return text.strip().replace("�", "").strip()
+
+
 def read_multiline():
     """Read multi-line input. /lines or /clear on their own line exits immediately."""
     lines = []
@@ -26,9 +32,8 @@ def read_multiline():
         line = input()
         lines.append(line)
 
-        # single-line /lines or /clear toggles back immediately
-        if len(lines) == 1 and line.strip() in ("/lines", "/clear"):
-            return line.strip()
+        if len(lines) == 1 and clean_cmd(line) in ("/lines", "/clear"):
+            return clean_cmd(line)
 
         if line.strip() == "":
             blank_count += 1
@@ -66,13 +71,13 @@ try:
         if not stripped:
             continue
 
-        if stripped == "/lines":
+        if clean_cmd(user_input) == "/lines":
             multiline = not multiline
             state = "开启" if multiline else "关闭"
             print(f"[多行输入已{state}]\n")
             continue
 
-        if stripped == "/clear":
+        if clean_cmd(user_input) == "/clear":
             messages = [
                 {"role": "system", "content": "You are a helpful assistant"},
             ]
