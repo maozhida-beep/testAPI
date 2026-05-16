@@ -35,7 +35,7 @@ source .env
 **3. Run**
 
 ```bash
-python testAPI.py
+python CLIWithDeepseek.py
 ```
 
 **4. Chat**
@@ -76,7 +76,7 @@ AI: You're welcome!
 
 ### Configuration
 
-Tweak these parameters in `testAPI.py`:
+Tweak these parameters in `CLIWithDeepseek.py`:
 
 | Parameter    | Description           | Default            |
 |-------------|-----------------------|--------------------|
@@ -121,7 +121,7 @@ source .env
 **3. 运行**
 
 ```bash
-python testAPI.py
+python CLIWithDeepseek.py
 ```
 
 **4. 使用**
@@ -162,7 +162,7 @@ AI: 不客气！
 
 ### 配置
 
-可在 `testAPI.py` 中调整以下参数：
+可在 `CLIWithDeepseek.py` 中调整以下参数：
 
 | 参数 | 说明 | 默认值 |
 |------|------|--------|
