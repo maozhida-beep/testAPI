@@ -21,7 +21,7 @@ def load_memory():
     if os.path.exists(MEMORY_FILE):
         content = open(MEMORY_FILE, encoding="utf-8").read().strip()
         if content:
-            print(f"[已加载记忆: {MEMORY_FILE}]\n")
+            print(f"[记忆已加载 / Memory loaded: {MEMORY_FILE}]\n")
         return content
     return ""
 
@@ -132,7 +132,7 @@ try:
 
         if clean_cmd(user_input) == "/lines":
             multiline = True
-            print("[多行输入已开启]\n")
+            print("[多行输入已开启 / Multi-line on (double-Enter to send)]\n")
             continue
 
         if clean_cmd(user_input) == "/single":
@@ -161,9 +161,9 @@ try:
         messages.append({"role": "assistant", "content": full_response})
 
 except KeyboardInterrupt:
-    print("\n\n正在保存记忆...")
+    print("\n\n正在保存记忆 / Saving memory...")
     new_memory = save_memory(messages, memory)
     os.makedirs(MEMORY_DIR, exist_ok=True)
     with open(MEMORY_FILE, "w", encoding="utf-8") as f:
         f.write(new_memory + "\n")
-    print("已退出对话。")
+    print("已退出对话 / Goodbye.")
