@@ -13,9 +13,63 @@ if not api_key:
 
 client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 
-messages = [
-    {"role": "system", "content": "You are a helpful assistant"},
-]
+MEMORY_DIR = os.path.expanduser("~/.cliwithdeepseek")
+MEMORY_FILE = os.path.join(MEMORY_DIR, "memory.md")
+
+
+def load_memory():
+    if os.path.exists(MEMORY_FILE):
+        content = open(MEMORY_FILE, encoding="utf-8").read().strip()
+        if content:
+            print(f"[已加载记忆: {MEMORY_FILE}]\n")
+        return content
+    return ""
+
+
+def build_system_prompt(memory):
+    content = "You are a helpful assistant."
+    if memory:
+        content += f"\n\nInformation about the user you are talking to:\n{memory}"
+    return content
+
+
+def save_memory(messages, old_memory):
+    conv = [m for m in messages if m["role"] != "system"]
+    if len(conv) < 2:
+        return old_memory
+
+    # Only use recent exchanges to keep the summary call lean
+    recent = conv[-30:]
+
+    prompt = (
+        "Extract key information about the user from this conversation. "
+        "Include: name, role, preferences, ongoing projects, tools they use, "
+        "and any other details that would help an AI assistant understand who they are. "
+        "Write in second person ('You are...', 'You prefer...'). "
+        "Be concise, 2-5 bullet points. Only include what can be confirmed from the conversation.\n\n"
+    )
+
+    if old_memory:
+        prompt += f"Existing memory about the user:\n{old_memory}\n\n"
+        prompt += "Update this with new information from the conversation above. "
+        prompt += "Keep existing info that hasn't changed, add new info, remove contradicted info."
+
+    try:
+        summary_messages = [
+            {"role": "system", "content": "You extract user profile information from conversations. Be concise and factual."},
+            *recent,
+            {"role": "user", "content": prompt},
+        ]
+        response = client.chat.completions.create(
+            model="deepseek-v4-pro",
+            messages=summary_messages,
+            max_tokens=500,
+            temperature=0.3,
+            stream=False,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception:
+        return old_memory
 
 
 def clean_cmd(text):
@@ -57,6 +111,11 @@ def send_message(stream):
     return full_response
 
 
+memory = load_memory()
+messages = [
+    {"role": "system", "content": build_system_prompt(memory)},
+]
+
 print("=== 终端对话 | /lines 多行 | /single 单行 | /clear 清空 | Ctrl+C 退出 ===\n")
 
 multiline = False
@@ -83,7 +142,7 @@ try:
 
         if clean_cmd(user_input) == "/clear":
             messages = [
-                {"role": "system", "content": "You are a helpful assistant"},
+                {"role": "system", "content": build_system_prompt(memory)},
             ]
             print("[对话历史已清空]\n")
             continue
@@ -102,4 +161,9 @@ try:
         messages.append({"role": "assistant", "content": full_response})
 
 except KeyboardInterrupt:
-    print("\n\n已退出对话。")
+    print("\n\n正在保存记忆...")
+    new_memory = save_memory(messages, memory)
+    os.makedirs(MEMORY_DIR, exist_ok=True)
+    with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+        f.write(new_memory + "\n")
+    print("已退出对话。")

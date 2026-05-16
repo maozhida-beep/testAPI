@@ -74,6 +74,10 @@ You: Thanks!
 AI: You're welcome!
 ```
 
+### Memory
+
+The tool automatically remembers who you are across sessions. When you exit (Ctrl+C), it summarizes your conversation into key facts (name, preferences, projects, tools) and saves them to `~/.cliwithdeepseek/memory.md`. Next time you launch, these facts are loaded into the system prompt so the assistant knows you right away — no need to reintroduce yourself.
+
 ### Configuration
 
 Tweak these parameters in `CLIWithDeepseek.py`:
@@ -159,6 +163,10 @@ You: /single
 You: 谢谢！
 AI: 不客气！
 ```
+
+### 记忆功能
+
+工具会在退出时自动总结你的对话，提取关键信息（名字、偏好、项目、工具），保存到 `~/.cliwithdeepseek/memory.md`。下次启动时自动加载，助手无需重新介绍就能了解你的背景。退出（Ctrl+C）时会自动生成摘要记忆。
 
 ### 配置
 
